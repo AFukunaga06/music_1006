@@ -1,0 +1,138 @@
+:root {
+    color-scheme: light dark;
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #74ebd5 0%, #acb6e5 100%);
+    padding: 24px;
+}
+
+.player {
+    width: min(680px, 100%);
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(6px);
+}
+
+h1 {
+    margin: 0 0 12px;
+    font-size: 1.9rem;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.description {
+    margin: 0 0 20px;
+    line-height: 1.6;
+    color: #34495e;
+    text-align: center;
+}
+
+.controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+button {
+    appearance: none;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    background: rgba(52, 152, 219, 0.12);
+    color: #2c3e50;
+}
+
+button:hover,
+button:focus-visible {
+    outline: none;
+    transform: translateY(-1px);
+    background: rgba(52, 152, 219, 0.22);
+    box-shadow: 0 6px 16px rgba(52, 152, 219, 0.28);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.status {
+    margin: 0 0 12px;
+    text-align: center;
+    color: #2c3e50;
+    font-size: 0.95rem;
+}
+
+.now-playing {
+    margin: 0 0 12px;
+    font-size: 1rem;
+    color: #2c3e50;
+}
+
+.playlist {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.track-button {
+    width: 100%;
+    text-align: left;
+    background: rgba(52, 152, 219, 0.1);
+    color: #34495e;
+}
+
+.track-button.active {
+    background: #3498db;
+    color: #ffffff;
+    box-shadow: 0 10px 22px rgba(52, 152, 219, 0.35);
+}
+
+audio {
+    width: 100%;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
+    }
+
+    .player {
+        background: rgba(25, 27, 41, 0.9);
+        color: #ecf0f1;
+    }
+
+    h1,
+    .description,
+    .status,
+    .now-playing {
+        color: rgba(236, 240, 241, 0.9);
+    }
+
+    button {
+        background: rgba(52, 152, 219, 0.18);
+        color: rgba(236, 240, 241, 0.9);
+    }
+}
