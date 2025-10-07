@@ -40,14 +40,6 @@ h1 {
     text-align: center;
 }
 
-.controls {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-}
-
 button {
     appearance: none;
     border: none;

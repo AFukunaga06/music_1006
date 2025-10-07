@@ -3,22 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ローカル MP3 ストリーミングプレーヤー</title>
+    <title>音楽プレーヤー</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <main class="player" aria-live="polite">
-        <h1>ローカル MP3 ストリーミングプレーヤー</h1>
+        <h1>🎵 音楽プレーヤー</h1>
         <p class="description">
-            ボタンからフォルダを選択すると、その中の MP3 ファイルを一覧表示してストリーミング再生できます。<br>
-            例: <code>C:\music_1006\</code> を選択し、このフォルダに MP3 を追加すると次回の読み込み時に自動でリストへ反映されます。
+            GitHub Pages 上に保存された 12 曲の MP3 をそのまま再生できます。<br>
+            一覧からタイトルをクリックするとブラウザ内で再生が始まります。
         </p>
-        <div class="controls">
-            <button id="choose-folder" type="button">フォルダを選択</button>
-            <button id="add-tracks" type="button" hidden disabled>MP3 を追加</button>
-            <button id="refresh" type="button" disabled>リストを更新</button>
-        </div>
-        <p id="status-message" class="status">MP3 フォルダを選択してください。</p>
+        <p id="status-message" class="status">曲リストを読み込んでいます…</p>
         <p class="now-playing">再生中: <span id="current-track">（未再生）</span></p>
         <div id="playlist" class="playlist" role="list"></div>
         <audio id="audio-player" controls preload="metadata">
