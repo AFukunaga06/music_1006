@@ -11,10 +11,11 @@ GitHub Pages でホストしている 12 曲固定の音楽プレーヤーです
 ## プレイリストの更新方法
 
 1. `audio/` ディレクトリに MP3 ファイルを追加または削除します。
-2. 変更をコミットして GitHub の `main` ブランチへプッシュします。
-3. GitHub Pages に反映されると、新しいプレイリストが自動的に読み込まれます。
+2. `node scripts/generate-tracklist.mjs` を実行して `audio/tracklist.json` を更新します。
+3. 変更をコミットして GitHub の `main` ブランチへプッシュします。
+4. GitHub Pages に反映されると、新しいプレイリストが自動的に読み込まれます。
 
-> 注記: GitHub API を利用しているため、短時間に大量のリロードを行うと 1 時間あたり 60 リクエストの匿名レート制限に達する可能性があります。
+> 注記: manifest が取得できない環境では GitHub API (60 req/h) にフォールバックします。
 
 ## ローカルでの動作確認
 
@@ -25,6 +26,6 @@ python -m http.server 8000
 
 ## 開発メモ
 
-- 主要な UI ロジックは `app.js` にあります。GitHub API から `audio/` 配下の MP3 を取得してプレイリストを構築します。
+- 主要な UI ロジックは `app.js` にあります。まず `audio/tracklist.json` から曲リストを読み込み、取得できない場合は GitHub API から `audio/` 配下を参照します。
 - スタイルは `styles.css` で定義しています。
 - Node.js ベースのサーバー (`server.js`) はアップロード管理を行うローカル開発用です。GitHub Pages では使用しません。

@@ -4,9 +4,6 @@ const currentTrackElement = document.getElementById("current-track");
 const audioPlayer = document.getElementById("audio-player");
 const trackTemplate = document.getElementById("track-template");
 
-const GITHUB_API_URL = "https://api.github.com/repos/AFukunaga06/music_1006/contents/audio?ref=main";
-const RAW_BASE_URL = "https://raw.githubusercontent.com/AFukunaga06/music_1006/main/";
-
 let tracks = [];
 let buttons = [];
 let currentIndex = -1;
@@ -30,7 +27,7 @@ audioPlayer.addEventListener("error", () => {
 async function init() {
     statusMessage.textContent = "曲リストを読み込んでいます…";
     try {
-        tracks = await fetchTracks();
+        tracks = await loadTrackList();
         if (tracks.length === 0) {
             statusMessage.textContent = "音源ファイルが見つかりませんでした。";
             return;
@@ -43,26 +40,18 @@ async function init() {
     }
 }
 
-async function fetchTracks() {
-    const response = await fetch(GITHUB_API_URL, {
-        headers: {
-            Accept: "application/vnd.github+json"
-        }
-    });
-
-    if (!response.ok) {
-        throw new Error(`GitHub API error: ${response.status}`);
+async function loadTrackList() {
+    const manifestTracks = await fetchManifest();
+    if (manifestTracks.length > 0) {
+        return manifestTracks;
     }
 
-    const data = await response.json();
+    const githubTracks = await fetchFromGitHub();
+    if (githubTracks.length > 0) {
+        return githubTracks;
+    }
 
-    return data
-        .filter((item) => item.type === "file" && item.name.toLowerCase().endsWith(".mp3"))
-        .map((item) => ({
-            title: formatTrackName(item.name),
-            file: buildRawUrl(item.path)
-        }))
-        .sort((a, b) => a.title.localeCompare(b.title, "ja"));
+    return [];
 }
 
 function renderPlaylist() {
@@ -106,14 +95,67 @@ function setActiveButton(button) {
     }
 }
 
-function buildRawUrl(path) {
-    const encodedPath = path.split("/").map(encodeURIComponent).join("/");
-    return `${RAW_BASE_URL}${encodedPath}`;
-}
-
 function formatTrackName(fileName) {
     return fileName
         .replace(/\.mp3$/i, "")
         .replace(/[\-_]+/g, " ")
         .trim();
+}
+
+async function fetchManifest() {
+    try {
+        const response = await fetch("audio/tracklist.json", { cache: "no-cache" });
+        if (!response.ok) {
+            return [];
+        }
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+            return [];
+        }
+        return data
+            .filter((name) => typeof name === "string" && name.toLowerCase().endsWith(".mp3"))
+            .sort((a, b) => a.localeCompare(b, "ja"))
+            .map((name) => ({
+                title: formatTrackName(name),
+                file: `audio/${encodeURIComponent(name)}`
+            }));
+    } catch (error) {
+        console.error("manifest load failed", error);
+        return [];
+    }
+}
+
+async function fetchFromGitHub() {
+    const GITHUB_API_URL = "https://api.github.com/repos/AFukunaga06/music_1006/contents/audio?ref=main";
+    const RAW_BASE_URL = "https://raw.githubusercontent.com/AFukunaga06/music_1006/main/";
+
+    try {
+        const response = await fetch(GITHUB_API_URL, {
+            headers: {
+                Accept: "application/vnd.github+json"
+            }
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+
+        return data
+            .filter((item) => item.type === "file" && item.name.toLowerCase().endsWith(".mp3"))
+            .map((item) => ({
+                title: formatTrackName(item.name),
+                file: buildRawUrl(RAW_BASE_URL, item.path)
+            }))
+            .sort((a, b) => a.title.localeCompare(b.title, "ja"));
+    } catch (error) {
+        console.error("GitHub fetch failed", error);
+        return [];
+    }
+}
+
+function buildRawUrl(baseUrl, path) {
+    const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+    return `${baseUrl}${encodedPath}`;
 }
