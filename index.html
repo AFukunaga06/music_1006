@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主がいるから大丈夫 - MP3プレーヤー</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
+        body {
+            margin: 0;
+            font-family: "Noto Sans JP", Arial, sans-serif;
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .player {
+            width: min(600px, 100%);
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(6px);
+        }
+        h1 {
+            margin: 0 0 12px;
+            font-size: 1.8rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+        p.description {
+            margin: 0 0 20px;
+            line-height: 1.6;
+            color: #34495e;
+            text-align: center;
+        }
+        .playlist {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .track-button {
+            appearance: none;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #34495e;
+            background: rgba(52, 152, 219, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            text-align: left;
+        }
+        .track-button:hover,
+        .track-button:focus-visible {
+            outline: none;
+            background: rgba(52, 152, 219, 0.2);
+            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.25);
+            transform: translateY(-2px);
+        }
+        .track-button.active {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 10px 22px rgba(52, 152, 219, 0.35);
+        }
+        .now-playing {
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: #2c3e50;
+        }
+        audio {
+            width: 100%;
+            border-radius: 12px;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1f1c2c 0%, #928DAB 100%);
+            }
+            .player {
+                background: rgba(25, 27, 41, 0.9);
+                color: #ecf0f1;
+            }
+            h1 {
+                color: #ecf0f1;
+            }
+            p.description,
+            .now-playing {
+                color: rgba(236, 240, 241, 0.9);
+            }
+            .track-button {
+                color: rgba(236, 240, 241, 0.9);
+                background: rgba(52, 152, 219, 0.18);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="player">
+        <h1>主がいるから大丈夫 - MP3プレーヤー</h1>
+        <p class="description">
+            楽曲タイトルをクリックすると、このページ上で直接再生されます。<br>
+            リポジトリ内の `audio/` フォルダに MP3 ファイルを配置してください。
+        </p>
+        <p class="now-playing">再生中: <span id="current-track">（未再生）</span></p>
+        <div class="playlist" id="playlist"></div>
+        <audio id="audio-player" controls preload="metadata">
+            お使いのブラウザは audio タグに対応していません。
+        </audio>
+    </main>
+
+    <script>
+        const tracks = [
+            { title: "主がいるから大丈夫", file: "audio/主がいるから大丈夫.mp3" },
+            { title: "主がいるから大丈夫 02", file: "audio/主がいるから大丈夫02.mp3" }
+        ];
+
+        const playlistElement = document.getElementById("playlist");
+        const audioPlayer = document.getElementById("audio-player");
+        const currentTrackElement = document.getElementById("current-track");
+
+        const buttons = tracks.map((track) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "track-button";
+            button.textContent = track.title;
+            button.dataset.src = track.file;
+            button.addEventListener("click", () => playTrack(button));
+            playlistElement.appendChild(button);
+            return button;
+        });
+
+        function playTrack(button) {
+            const source = button.dataset.src;
+            audioPlayer.src = source;
+            audioPlayer.play().catch(() => {
+                currentTrackElement.textContent = "再生を開始できませんでした";
+            });
+
+            currentTrackElement.textContent = button.textContent;
+            buttons.forEach((btn) => btn.classList.remove("active"));
+            button.classList.add("active");
+        }
+
+        audioPlayer.addEventListener("ended", () => {
+            buttons.forEach((btn) => btn.classList.remove("active"));
+            currentTrackElement.textContent = "（未再生）";
+        });
+    </script>
+</body>
+</html>
