@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>音楽プレーヤー - 曲管理機能付き</title>
+    <title>🎵 音楽プレーヤー</title>
     <style>
         :root {
             color-scheme: light dark;
@@ -18,29 +18,19 @@
             justify-content: center;
             padding: 24px;
         }
-        .container {
-            width: min(800px, 100%);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .player, .manager {
+        .player {
+            width: min(600px, 100%);
             background: rgba(255, 255, 255, 0.92);
             border-radius: 18px;
             padding: 28px;
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
             backdrop-filter: blur(6px);
         }
-        h1, h2 {
+        h1 {
             margin: 0 0 12px;
+            font-size: 1.8rem;
             color: #2c3e50;
             text-align: center;
-        }
-        h1 {
-            font-size: 1.8rem;
-        }
-        h2 {
-            font-size: 1.4rem;
         }
         p.description {
             margin: 0 0 20px;
@@ -53,24 +43,15 @@
             gap: 12px;
             margin-bottom: 24px;
         }
-        .track-item {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            border-radius: 12px;
-            padding: 14px 18px;
-            background: rgba(52, 152, 219, 0.1);
-        }
         .track-button {
-            flex: 1;
             appearance: none;
             border: none;
-            border-radius: 8px;
-            padding: 10px 14px;
+            border-radius: 12px;
+            padding: 14px 18px;
             font-size: 1rem;
             font-weight: 600;
             color: #34495e;
-            background: transparent;
+            background: rgba(52, 152, 219, 0.1);
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
             text-align: left;
@@ -79,27 +60,13 @@
         .track-button:focus-visible {
             outline: none;
             background: rgba(52, 152, 219, 0.2);
-            transform: translateX(4px);
+            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.25);
+            transform: translateY(-2px);
         }
         .track-button.active {
             background: #3498db;
             color: white;
-        }
-        .delete-button {
-            appearance: none;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: white;
-            background: #e74c3c;
-            cursor: pointer;
-            transition: transform 0.2s ease, background 0.2s ease;
-        }
-        .delete-button:hover {
-            background: #c0392b;
-            transform: scale(1.05);
+            box-shadow: 0 10px 22px rgba(52, 152, 219, 0.35);
         }
         .now-playing {
             margin-bottom: 12px;
@@ -110,205 +77,68 @@
             width: 100%;
             border-radius: 12px;
         }
-        .upload-section {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
-        }
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            left: -9999px;
-        }
-        .file-input-label {
-            display: block;
-            padding: 14px 20px;
-            background: #3498db;
-            color: white;
-            text-align: center;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s ease;
-        }
-        .file-input-label:hover {
-            background: #2980b9;
-        }
-        .upload-button {
-            appearance: none;
-            border: none;
-            border-radius: 12px;
-            padding: 14px 20px;
-            font-size: 1rem;
-            font-weight: 600;
-            color: white;
-            background: #27ae60;
-            cursor: pointer;
-            transition: background 0.2s ease, transform 0.2s ease;
-        }
-        .upload-button:hover {
-            background: #229954;
-            transform: translateY(-2px);
-        }
-        .upload-button:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .file-name {
-            padding: 10px;
-            background: rgba(52, 152, 219, 0.1);
-            border-radius: 8px;
-            text-align: center;
-            color: #34495e;
-        }
-        .message {
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-            margin-top: 12px;
-        }
-        .message.success {
-            background: rgba(39, 174, 96, 0.2);
-            color: #27ae60;
-        }
-        .message.error {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-        }
         @media (prefers-color-scheme: dark) {
             body {
                 background: linear-gradient(135deg, #1f1c2c 0%, #928DAB 100%);
             }
-            .player, .manager {
+            .player {
                 background: rgba(25, 27, 41, 0.9);
                 color: #ecf0f1;
             }
-            h1, h2 {
+            h1 {
                 color: #ecf0f1;
             }
             p.description,
             .now-playing {
                 color: rgba(236, 240, 241, 0.9);
             }
-            .track-item {
-                background: rgba(52, 152, 219, 0.18);
-            }
             .track-button {
                 color: rgba(236, 240, 241, 0.9);
-            }
-            .file-name {
                 background: rgba(52, 152, 219, 0.18);
-                color: rgba(236, 240, 241, 0.9);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <main class="player">
-            <h1>🎵 音楽プレーヤー</h1>
-            <p class="description">
-                楽曲タイトルをクリックすると、このページ上で直接再生されます。
-            </p>
-            <p class="now-playing">再生中: <span id="current-track">（未再生）</span></p>
-            <div class="playlist" id="playlist"></div>
-            <audio id="audio-player" controls preload="metadata">
-                お使いのブラウザは audio タグに対応していません。
-            </audio>
-        </main>
-
-        <section class="manager">
-            <h2>🎼 曲の管理</h2>
-            <p class="description">
-                MP3ファイルをアップロードして、プレイリストに追加できます。
-            </p>
-            <div class="upload-section">
-                <div class="file-input-wrapper">
-                    <input type="file" id="file-input" accept=".mp3" />
-                    <label for="file-input" class="file-input-label">
-                        📁 MP3ファイルを選択
-                    </label>
-                </div>
-                <div id="file-name" class="file-name" style="display: none;"></div>
-                <button id="upload-button" class="upload-button" disabled>
-                    ⬆️ アップロード
-                </button>
-                <div id="message" class="message" style="display: none;"></div>
-            </div>
-        </section>
-    </div>
+    <main class="player">
+        <h1>🎵 音楽プレーヤー</h1>
+        <p class="description">
+            楽曲タイトルをクリックすると、このページ上で直接再生されます。
+        </p>
+        <p class="now-playing">再生中: <span id="current-track">（未再生）</span></p>
+        <div class="playlist" id="playlist"></div>
+        <audio id="audio-player" controls preload="metadata">
+            お使いのブラウザは audio タグに対応していません。
+        </audio>
+    </main>
 
     <script>
+        // audioフォルダ内のMP3ファイルリスト
+        // 新しい曲を追加したら、ここに追加してください
+        const tracks = [
+            { title: "Untitled", file: "audio/Untitled.mp3" },
+            { title: "Untitled 01", file: "audio/Untitled01.mp3" },
+            { title: "幸いな人よ 01", file: "audio/saiwainahitoyo_t01.mp3" },
+            { title: "幸いな人よ 02", file: "audio/saiwainahitoyo_t02.mp3" },
+            { title: "幸いな人よ 03", file: "audio/saiwainahitoyo_t03.mp3" },
+            { title: "幸いな人よ 04", file: "audio/saiwainahitoyo_t04.mp3" }
+        ];
+
         const playlistElement = document.getElementById("playlist");
         const audioPlayer = document.getElementById("audio-player");
         const currentTrackElement = document.getElementById("current-track");
-        const fileInput = document.getElementById("file-input");
-        const fileNameDisplay = document.getElementById("file-name");
-        const uploadButton = document.getElementById("upload-button");
-        const messageElement = document.getElementById("message");
 
-        let tracks = [];
-        let buttons = [];
+        const buttons = tracks.map((track) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "track-button";
+            button.textContent = track.title;
+            button.dataset.src = track.file;
+            button.addEventListener("click", () => playTrack(button));
+            playlistElement.appendChild(button);
+            return button;
+        });
 
-        // サーバーから曲リストを取得
-        async function loadTracks() {
-            try {
-                const response = await fetch('/api/tracks');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                tracks = await response.json();
-                renderPlaylist();
-            } catch (error) {
-                console.error('曲リストの取得に失敗しました:', error);
-                // サーバーがない場合は空のリストを表示
-                tracks = [];
-                renderPlaylist();
-            }
-        }
-
-        // プレイリストを描画
-        function renderPlaylist() {
-            playlistElement.innerHTML = '';
-            buttons = [];
-
-            if (tracks.length === 0) {
-                playlistElement.innerHTML = '<p style="text-align: center; color: #7f8c8d;">曲がありません。MP3ファイルをアップロードしてください。</p>';
-                return;
-            }
-
-            tracks.forEach((track) => {
-                const trackItem = document.createElement("div");
-                trackItem.className = "track-item";
-
-                const button = document.createElement("button");
-                button.type = "button";
-                button.className = "track-button";
-                button.textContent = track.title;
-                button.dataset.src = track.file;
-                button.addEventListener("click", () => playTrack(button));
-
-                const deleteBtn = document.createElement("button");
-                deleteBtn.type = "button";
-                deleteBtn.className = "delete-button";
-                deleteBtn.textContent = "削除";
-                deleteBtn.addEventListener("click", () => deleteTrack(track.file, track.title));
-
-                trackItem.appendChild(button);
-                trackItem.appendChild(deleteBtn);
-                playlistElement.appendChild(trackItem);
-                buttons.push(button);
-            });
-        }
-
-        // 曲を再生
         function playTrack(button) {
             const source = button.dataset.src;
 
@@ -318,7 +148,7 @@
 
             // 新しいソースを設定
             audioPlayer.src = source;
-            audioPlayer.load(); // 明示的にロード
+            audioPlayer.load();
 
             // 再生を開始
             audioPlayer.play().catch((error) => {
@@ -331,110 +161,10 @@
             button.classList.add("active");
         }
 
-        // 曲を削除
-        async function deleteTrack(filePath, title) {
-            if (!confirm(`「${title}」を削除しますか？`)) {
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/delete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ file: filePath }),
-                });
-
-                if (response.ok) {
-                    showMessage(`「${title}」を削除しました`, 'success');
-
-                    // 削除した曲が再生中だった場合、停止する
-                    const currentSrc = audioPlayer.src;
-                    if (currentSrc && currentSrc.includes(decodeURIComponent(filePath))) {
-                        audioPlayer.pause();
-                        audioPlayer.src = '';
-                        currentTrackElement.textContent = '（未再生）';
-                        buttons.forEach((btn) => btn.classList.remove("active"));
-                    }
-
-                    await loadTracks();
-                } else {
-                    const errorData = await response.json().catch(() => ({}));
-                    showMessage(errorData.error || '削除に失敗しました', 'error');
-                }
-            } catch (error) {
-                console.error('削除エラー:', error);
-                showMessage('削除に失敗しました', 'error');
-            }
-        }
-
-        // ファイル選択時の処理
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                fileNameDisplay.textContent = `選択中: ${file.name}`;
-                fileNameDisplay.style.display = 'block';
-                uploadButton.disabled = false;
-            } else {
-                fileNameDisplay.style.display = 'none';
-                uploadButton.disabled = true;
-            }
-        });
-
-        // アップロード処理
-        uploadButton.addEventListener('click', async () => {
-            const file = fileInput.files[0];
-            if (!file) return;
-
-            const formData = new FormData();
-            formData.append('audio', file);
-
-            uploadButton.disabled = true;
-            uploadButton.textContent = 'アップロード中...';
-
-            try {
-                const response = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (response.ok) {
-                    showMessage(`「${file.name}」をアップロードしました`, 'success');
-                    fileInput.value = '';
-                    fileNameDisplay.style.display = 'none';
-                    await loadTracks();
-                } else {
-                    const error = await response.json();
-                    showMessage(error.error || 'アップロードに失敗しました', 'error');
-                }
-            } catch (error) {
-                console.error('アップロードエラー:', error);
-                showMessage('アップロードに失敗しました', 'error');
-            } finally {
-                uploadButton.disabled = false;
-                uploadButton.textContent = '⬆️ アップロード';
-            }
-        });
-
-        // メッセージを表示
-        function showMessage(text, type) {
-            messageElement.textContent = text;
-            messageElement.className = `message ${type}`;
-            messageElement.style.display = 'block';
-            setTimeout(() => {
-                messageElement.style.display = 'none';
-            }, 3000);
-        }
-
-        // 再生終了時の処理
         audioPlayer.addEventListener("ended", () => {
             buttons.forEach((btn) => btn.classList.remove("active"));
             currentTrackElement.textContent = "（未再生）";
         });
-
-        // 初期ロード
-        loadTracks();
     </script>
 </body>
 </html>
