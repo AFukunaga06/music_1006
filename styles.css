@@ -17,6 +17,14 @@ body {
     padding: 24px;
 }
 
+.layout {
+    width: min(960px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+}
+
 .player {
     width: min(680px, 100%);
     background: rgba(255, 255, 255, 0.92);
@@ -24,6 +32,104 @@ body {
     padding: 28px;
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
     backdrop-filter: blur(6px);
+}
+
+.manager {
+    width: min(680px, 100%);
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 18px;
+    padding: 24px 28px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(6px);
+}
+
+h2 {
+    margin: 0 0 12px;
+    font-size: 1.4rem;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.manager-description {
+    margin-bottom: 16px;
+}
+
+.upload-form {
+    display: grid;
+    gap: 12px;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-input-label {
+    display: block;
+    text-align: center;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    background: #3498db;
+    color: #ffffff;
+}
+
+.file-input-label:hover,
+.file-input-label:focus-visible {
+    outline: none;
+    transform: translateY(-1px);
+    background: #2c81be;
+    box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+}
+
+.upload-button {
+    background: #27ae60;
+    color: #ffffff;
+}
+
+.upload-button:hover,
+.upload-button:focus-visible {
+    background: #1f8c4d;
+}
+
+.file-name {
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(52, 152, 219, 0.12);
+    color: #34495e;
+    text-align: center;
+}
+
+.message {
+    margin: 12px 0 0;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.message.info {
+    background: rgba(52, 152, 219, 0.15);
+    color: #2980b9;
+}
+
+.message.success {
+    background: rgba(39, 174, 96, 0.15);
+    color: #27ae60;
+}
+
+.message.error {
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+}
+
+.helper-text {
+    margin: 10px 0 0;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #556170;
 }
 
 h1 {
@@ -87,6 +193,16 @@ button:disabled {
     margin-bottom: 24px;
 }
 
+.empty-message {
+    margin: 0;
+    padding: 18px;
+    border-radius: 12px;
+    background: rgba(52, 152, 219, 0.12);
+    text-align: center;
+    color: #556170;
+    font-size: 0.95rem;
+}
+
 .track-button {
     width: 100%;
     text-align: left;
@@ -126,5 +242,28 @@ audio {
     button {
         background: rgba(52, 152, 219, 0.18);
         color: rgba(236, 240, 241, 0.9);
+    }
+
+    .manager {
+        background: rgba(25, 27, 41, 0.9);
+    }
+
+    h2,
+    .helper-text,
+    .file-name {
+        color: rgba(236, 240, 241, 0.9);
+    }
+
+    .file-input-label {
+        background: #2d89c6;
+    }
+
+    .upload-button {
+        background: #229954;
+    }
+
+    .empty-message {
+        background: rgba(52, 152, 219, 0.22);
+        color: rgba(236, 240, 241, 0.8);
     }
 }

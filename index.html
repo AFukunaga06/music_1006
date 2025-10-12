@@ -7,19 +7,38 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <main class="player" aria-live="polite">
-        <h1>🎵 音楽プレーヤー</h1>
-        <p class="description">
-            GitHub Pages 上に保存された 12 曲の MP3 をそのまま再生できます。<br>
-            一覧からタイトルをクリックするとブラウザ内で再生が始まります。
-        </p>
-        <p id="status-message" class="status">曲リストを読み込んでいます…</p>
-        <p class="now-playing">再生中: <span id="current-track">（未再生）</span></p>
-        <div id="playlist" class="playlist" role="list"></div>
-        <audio id="audio-player" controls preload="metadata">
-            お使いのブラウザは audio タグに対応していません。
-        </audio>
-    </main>
+    <div class="layout">
+        <main class="player" aria-live="polite">
+            <h1>🎵 音楽プレーヤー</h1>
+            <p class="description">
+                GitHub Pages 上に保存された 12 曲の MP3 をそのまま再生できます。<br>
+                一覧からタイトルをクリックするとブラウザ内で再生が始まります。
+            </p>
+            <p id="status-message" class="status">曲リストを読み込んでいます…</p>
+            <p class="now-playing">再生中: <span id="current-track">（未再生）</span></p>
+            <div id="playlist" class="playlist" role="list"></div>
+            <audio id="audio-player" controls preload="metadata">
+                お使いのブラウザは audio タグに対応していません。
+            </audio>
+        </main>
+
+        <section class="manager" id="track-manager" aria-live="polite">
+            <h2>🎼 曲の追加</h2>
+            <p class="description manager-description">
+                Node.js サーバー（<code>node server.js</code>）を起動すると、ローカルの MP3 ファイルをアップロードしてプレイリストに追加できます。
+            </p>
+            <form id="upload-form" class="upload-form">
+                <input type="file" id="file-input" class="file-input" accept=".mp3,audio/mpeg" aria-describedby="upload-helper" />
+                <label for="file-input" class="file-input-label">📁 MP3ファイルを選択</label>
+                <div id="selected-file-name" class="file-name" hidden>ファイルが選択されていません</div>
+                <button type="submit" id="upload-button" class="upload-button" disabled>アップロード</button>
+            </form>
+            <p id="upload-message" class="message info" role="status">ローカルサーバーが起動していると楽曲を追加できます。</p>
+            <p id="upload-helper" class="helper-text">
+                GitHub Pages 等の静的ホスティングではアップロード機能は利用できません。
+            </p>
+        </section>
+    </div>
 
     <template id="track-template">
         <button class="track-button" type="button" role="listitem"></button>
