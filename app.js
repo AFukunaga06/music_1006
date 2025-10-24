@@ -17,6 +17,12 @@ let localMode = false;
 let selectedFile = null;
 let isUploading = false;
 
+const LOCAL_TRACK_ENDPOINTS = [
+    "/api/tracks",
+    "/api/tracks.php",
+    "api/tracks.php"
+];
+
 init();
 
 audioPlayer.addEventListener("ended", () => {
@@ -269,49 +275,77 @@ async function loadTrackList() {
     localMode = false;
 
     const manifestTracks = await fetchManifest();
-    if (manifestTracks.length > 0) {
-        return manifestTracks;
-    }
-
-    return fetchFromGitHub();
+    return manifestTracks;
 }
 
 async function fetchLocalTracks() {
-    try {
-        const response = await fetch("/api/tracks", { cache: "no-cache" });
-        if (!response.ok) {
-            if (response.status === 404) {
-                localMode = false;
-                return null;
+    for (const endpoint of LOCAL_TRACK_ENDPOINTS) {
+        try {
+            const response = await fetch(endpoint, { cache: "no-cache" });
+            if (!response.ok) {
+                if (response.status === 404) {
+                    continue;
+                }
+                localMode = true;
+                return [];
             }
-            localMode = true;
-            return [];
-        }
 
-        const data = await response.json();
-        localMode = true;
-        if (!Array.isArray(data)) {
-            return [];
+            const data = await response.json();
+            localMode = true;
+            if (!Array.isArray(data)) {
+                return [];
+            }
+            return normalizeLocalTracks(data);
+        } catch (error) {
+            console.error(`local fetch failed (${endpoint})`, error);
         }
-        return normalizeLocalTracks(data);
-    } catch (error) {
-        console.error("local fetch failed", error);
-        localMode = false;
-        return null;
     }
+
+    localMode = false;
+    return null;
 }
 
 function normalizeLocalTracks(data) {
     return data
         .filter((item) => item && typeof item.file === "string")
         .map((item) => {
-            const file = item.file;
+            const file = normalizeFilePath(item.file);
+            if (file.length === 0) {
+                return null;
+            }
             const title = typeof item.title === "string" && item.title.trim().length > 0
                 ? item.title.trim()
                 : formatTrackName(file.split("/").pop() ?? "");
             return { title, file };
         })
+        .filter((track) => track !== null)
         .sort((a, b) => a.title.localeCompare(b.title, "ja"));
+}
+
+function normalizeFilePath(file) {
+    if (typeof file !== "string") {
+        return "";
+    }
+
+    const trimmed = file.trim();
+    if (trimmed.length === 0) {
+        return "";
+    }
+
+    if (/^https?:\/\//i.test(trimmed)) {
+        return trimmed;
+    }
+
+    if (trimmed.startsWith("/audio/")) {
+        return trimmed.slice(1);
+    }
+
+    if (trimmed.startsWith("./")) {
+        const normalized = trimmed.replace(/^\.\//, "");
+        return normalized.startsWith("audio/") ? normalized : `audio/${normalized}`;
+    }
+
+    return trimmed.startsWith("audio/") ? trimmed : `audio/${trimmed.replace(/^\//, "")}`;
 }
 
 function renderPlaylist() {
@@ -391,52 +425,21 @@ async function fetchManifest() {
         if (!Array.isArray(data)) {
             return [];
         }
-        return data
-            .filter((name) => typeof name === "string" && name.toLowerCase().endsWith(".mp3"))
-            .sort((a, b) => a.localeCompare(b, "ja"))
-            .map((name) => ({
+        const tracks = [];
+        for (const name of data) {
+            if (typeof name !== "string" || !name.toLowerCase().endsWith(".mp3")) {
+                continue;
+            }
+            tracks.push({
                 title: formatTrackName(name),
                 file: `audio/${encodeURIComponent(name)}`
-            }));
+            });
+        }
+        return tracks;
     } catch (error) {
         console.error("manifest load failed", error);
         return [];
     }
-}
-
-async function fetchFromGitHub() {
-    const GITHUB_API_URL = "https://api.github.com/repos/AFukunaga06/music_1006/contents/audio?ref=main";
-    const RAW_BASE_URL = "https://raw.githubusercontent.com/AFukunaga06/music_1006/main/";
-
-    try {
-        const response = await fetch(GITHUB_API_URL, {
-            headers: {
-                Accept: "application/vnd.github+json"
-            }
-        });
-
-        if (!response.ok) {
-            return [];
-        }
-
-        const data = await response.json();
-
-        return data
-            .filter((item) => item.type === "file" && item.name.toLowerCase().endsWith(".mp3"))
-            .map((item) => ({
-                title: formatTrackName(item.name),
-                file: buildRawUrl(RAW_BASE_URL, item.path)
-            }))
-            .sort((a, b) => a.title.localeCompare(b.title, "ja"));
-    } catch (error) {
-        console.error("GitHub fetch failed", error);
-        return [];
-    }
-}
-
-function buildRawUrl(baseUrl, path) {
-    const encodedPath = path.split("/").map(encodeURIComponent).join("/");
-    return `${baseUrl}${encodedPath}`;
 }
 
 function isMp3File(file) {
